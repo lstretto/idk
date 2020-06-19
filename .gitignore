@@ -1,129 +1,74 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+WIDTH = 500
+HEIGHT = 500
+scoreRED = 0
+scoreBLUE = 0
 
-# C extensions
-*.so
+ball = Rect((150,390), (20, 20))
+bat = Rect((200, 450), (100, 15))
+bat2 = Rect((200, 20), (100, 15))
+vx = 4
+vy = 4
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+def draw():
+    screen.clear()
+    screen.draw.filled_rect(ball, "white")
+    screen.draw.filled_rect(bat, "blue")
+    screen.draw.filled_rect(bat2, "red")
+    screen.draw.text("Player Red: " + str(scoreRED), color="white", topleft=(10,10))
+    screen.draw.text("Player Blue: " + str(scoreBLUE), color="white", topleft=(385,10))
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+    #if game_over:
+    # screen.draw.text("Final Score: " + str(score), topleft=(10,10), fontsize=60)
 
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
+#1st Paddle
+def update():
+    global vx, vy, scoreRED, scoreBLUE, score
+    ball.x += vx
+    ball.y += vy
+    if ball.right > WIDTH or ball.left < 0:
+        vx = -vx
+    if ball.colliderect(bat) or ball.top < 0:
+        sounds.bop.play()
+        vy = -vy
+    if ball.top > 500:
+        scoreRED += 1
+        reset_game()
+    if (keyboard.right):
+        bat.x += 8
+    elif(keyboard.left):
+        bat.x -= 8
+    while scoreRED >= 5:
+        exit_game()
+        print ("RED WINS!")
+    while scoreBLUE >= 5:
+        print ("BLUE WINS!")
+        exit_game()
 
-# Translations
-*.mo
-*.pot
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
 
-# Flask stuff:
-instance/
-.webassets-cache
+#2nd Paddle
+    if ball.colliderect(bat2) or ball.bottom < 0:
+        vy = -vy
+        sounds.bop.play()
+    if ball.top < 0:
+        scoreBLUE += 1
+        reset_game()
+    if (keyboard.d):
+        bat2.x += 8
+    elif(keyboard.a):
+        bat2.x -= 8
 
-# Scrapy stuff:
-.scrapy
+def reset_game():
+    #reset ball
+    ball.x = WIDTH / 2
+    ball.y = HEIGHT / 2
+    ballDirectionX = 1
+    ballDirectionY = 1
 
-# Sphinx documentation
-docs/_build/
+#Sound
+music.play('vibe')
 
-# PyBuilder
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-.python-version
-
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-#Pipfile.lock
-
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
+   
+#reset game
+reset_game()
